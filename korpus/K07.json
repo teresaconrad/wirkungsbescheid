@@ -1,0 +1,188 @@
+{
+  "meta": {
+    "finanzamt": "Finanzamt Musterstadt",
+    "veranlagungsjahr": 2024,
+    "bescheiddatum": "15.05.2026",
+    "bescheidart": "erstbescheid",
+    "vorlaeufigkeitsvermerke": [],
+    "bundesland": "Berlin"
+  },
+  "veranlagungsart": "einzel",
+  "kirchensteuerpflicht": false,
+  "kinder": [],
+  "person_a": {
+    "bruttolohn": {
+      "wert": "58000",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "werbungskosten": {
+      "wert": "2200",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "einkuenfte_nsa": {
+      "wert": "55800",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kapital_tariflich": null,
+    "kapital_abgeltend": null,
+    "vermietung_verpachtung": {
+      "wert": "9400",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "selbstaendig": null,
+    "gewerbebetrieb": null,
+    "gewerbesteuer_messbetrag": null,
+    "renten_besteuerungsanteil": null,
+    "sonstige": null,
+    "lohnersatzleistungen": null,
+    "auslaendische_einkuenfte_dba": null,
+    "lohnsteuer_einbehalten": {
+      "wert": "10900",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "faktorverfahren": false
+  },
+  "person_b": null,
+  "abzuege": {
+    "vorsorgeaufwendungen": {
+      "wert": "9600",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "sonderausgaben_uebrige": null,
+    "spenden": null,
+    "kinderbetreuung": null,
+    "unterhalt_realsplitting": null,
+    "agb_geltend_gemacht": null,
+    "agb_zumutbare_belastung": null,
+    "agb_abziehbar": null,
+    "ausbildungsfreibetrag": null,
+    "verlustabzug": {
+      "wert": "6500",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "p35a_haushaltsnah": null,
+    "p35a_handwerker": {
+      "wert": "4200",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    }
+  },
+  "festsetzung": {
+    "gesamtbetrag_einkuenfte": {
+      "wert": "65200",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "einkommen": {
+      "wert": "49100",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kinderfreibetraege_summe": null,
+    "zve": {
+      "wert": "49100",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "steuersatz_besonders": null,
+    "tarifliche_est": {
+      "wert": "10550",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "hinzurechnung_kindergeld": null,
+    "ermaessigung_35a": {
+      "wert": "840",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "ermaessigung_35": null,
+    "festgesetzte_est": {
+      "wert": "9710",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "soli": {
+      "wert": "0",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kirchensteuer": null
+  },
+  "abrechnung": {
+    "lohnsteuer_gesamt": {
+      "wert": "10900",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kapitalertragsteuer": null,
+    "vorauszahlungen_geleistet": null,
+    "bereits_getilgt": null,
+    "erstattung": {
+      "wert": "1190",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "nachzahlung": null,
+    "vorauszahlungen_kuenftig_quartal": null,
+    "lastschrift": null
+  }
+}

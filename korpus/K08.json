@@ -1,0 +1,218 @@
+{
+  "meta": {
+    "finanzamt": "Finanzamt Musterstadt",
+    "veranlagungsjahr": 2024,
+    "bescheiddatum": "15.05.2026",
+    "bescheidart": "erstbescheid",
+    "vorlaeufigkeitsvermerke": [],
+    "bundesland": "Nordrhein-Westfalen"
+  },
+  "veranlagungsart": "zusammen",
+  "kirchensteuerpflicht": true,
+  "kinder": [],
+  "person_a": {
+    "bruttolohn": {
+      "wert": "67000",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "werbungskosten": {
+      "wert": "1500",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "einkuenfte_nsa": {
+      "wert": "65500",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kapital_tariflich": null,
+    "kapital_abgeltend": null,
+    "vermietung_verpachtung": null,
+    "selbstaendig": null,
+    "gewerbebetrieb": null,
+    "gewerbesteuer_messbetrag": null,
+    "renten_besteuerungsanteil": null,
+    "sonstige": null,
+    "lohnersatzleistungen": null,
+    "auslaendische_einkuenfte_dba": {
+      "wert": "14800",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "lohnsteuer_einbehalten": {
+      "wert": "11200",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "faktorverfahren": true
+  },
+  "person_b": {
+    "bruttolohn": {
+      "wert": "41000",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "werbungskosten": {
+      "wert": "1230",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "einkuenfte_nsa": {
+      "wert": "39770",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kapital_tariflich": null,
+    "kapital_abgeltend": null,
+    "vermietung_verpachtung": null,
+    "selbstaendig": null,
+    "gewerbebetrieb": null,
+    "gewerbesteuer_messbetrag": null,
+    "renten_besteuerungsanteil": null,
+    "sonstige": null,
+    "lohnersatzleistungen": null,
+    "auslaendische_einkuenfte_dba": null,
+    "lohnsteuer_einbehalten": {
+      "wert": "5400",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "faktorverfahren": true
+  },
+  "abzuege": {
+    "vorsorgeaufwendungen": {
+      "wert": "15800",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "sonderausgaben_uebrige": null,
+    "spenden": null,
+    "kinderbetreuung": null,
+    "unterhalt_realsplitting": null,
+    "agb_geltend_gemacht": null,
+    "agb_zumutbare_belastung": null,
+    "agb_abziehbar": null,
+    "ausbildungsfreibetrag": null,
+    "verlustabzug": null,
+    "p35a_haushaltsnah": null,
+    "p35a_handwerker": null
+  },
+  "festsetzung": {
+    "gesamtbetrag_einkuenfte": {
+      "wert": "105270",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "einkommen": {
+      "wert": "89470",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kinderfreibetraege_summe": null,
+    "zve": {
+      "wert": "89470",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "steuersatz_besonders": "22.3400",
+    "tarifliche_est": {
+      "wert": "19987",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "hinzurechnung_kindergeld": null,
+    "ermaessigung_35a": null,
+    "ermaessigung_35": null,
+    "festgesetzte_est": {
+      "wert": "19987",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "soli": {
+      "wert": "0",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kirchensteuer": {
+      "wert": "1798.83",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    }
+  },
+  "abrechnung": {
+    "lohnsteuer_gesamt": {
+      "wert": "16600",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "kapitalertragsteuer": null,
+    "vorauszahlungen_geleistet": null,
+    "bereits_getilgt": null,
+    "erstattung": null,
+    "nachzahlung": {
+      "wert": "5185.83",
+      "provenienz": {
+        "konfidenz": 1.0,
+        "seite": null,
+        "herkunft": "extrahiert"
+      }
+    },
+    "vorauszahlungen_kuenftig_quartal": null,
+    "lastschrift": null
+  }
+}
