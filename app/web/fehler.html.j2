@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auslesen fehlgeschlagen — Wirkungsbescheid-Demonstrator</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#16211c;--line:#c9d1cc;--blue:#0b4f6c;--muted:#5d6a63}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'IBM Plex Sans',sans-serif;background:#e8ebe9;color:var(--ink);padding:60px 16px;line-height:1.55}
+  .karte{max-width:620px;margin:0 auto;background:#fff;padding:40px 44px;box-shadow:0 2px 6px rgba(22,33,28,.12)}
+  h1{font-size:22px;line-height:1.25}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+  .meldung{background:#f7efe3;border-left:3px solid #9a5b1a;padding:12px 16px;font-size:14px;margin-top:18px}
+  ul{margin:14px 0 0 18px;font-size:13px;color:var(--muted)}
+  li{margin-top:6px}
+  a.btn{display:inline-block;margin-top:22px;background:var(--blue);color:#fff;padding:10px 22px;font-size:14px;font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="karte">
+  <span class="eyebrow">Prototyp · Re:form / Project Together</span>
+  <h1>Das hat leider nicht geklappt</h1>
+  <div class="meldung">{{ meldung }}</div>
+  <ul>
+    <li>Bitte <b>alle Seiten</b> des Bescheids hochladen — bei Fotos können Sie mehrere Dateien gleichzeitig auswählen (eine je Seite, in Reihenfolge).</li>
+    <li>Fotos möglichst gerade von oben, gute Beleuchtung, Zahlen gut lesbar.</li>
+    <li>Ihr Dokument wurde <b>nicht gespeichert</b> — es lag nur kurz im Arbeitsspeicher.</li>
+  </ul>
+  <a class="btn" href="/">Zurück zum Upload</a>
+</div>
+</body>
+</html>

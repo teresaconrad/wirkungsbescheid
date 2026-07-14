@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steuer- und Wirkungsbescheid {{ jahr }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16211c; --paper:#fff; --backdrop:#e8ebe9; --line:#c9d1cc;
+    --amt-blue:#0b4f6c; --amt-blue-soft:#e9f1f5;
+    --wirkung:#1f6f4a; --wirkung-soft:#eaf3ee;
+    --delta:#9a5b1a; --delta-soft:#f7efe3;
+    --recht:#5a2a6e; --recht-soft:#f2ecf6;
+    --muted:#5d6a63; --placeholder:#8a948e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:var(--backdrop);color:var(--ink);padding:40px 16px 80px;line-height:1.5}
+  a{color:var(--amt-blue);text-decoration:none;border-bottom:1px solid var(--amt-blue)}
+  .sheet{max-width:800px;margin:0 auto 34px;background:var(--paper);
+    box-shadow:0 2px 6px rgba(22,33,28,.12),0 16px 40px rgba(22,33,28,.10);
+    padding:50px 56px 38px;position:relative}
+  @media (max-width:660px){ .sheet{padding:28px 18px} }
+  .mockband{position:absolute;top:0;left:0;right:0;height:6px;
+    background:repeating-linear-gradient(-45deg,#16211c,#16211c 12px,#f2c14e 12px,#f2c14e 24px)}
+  .mocklabel{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:#fff;background:var(--ink);padding:3px 10px;margin-bottom:22px}
+  .chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:1px 8px;margin:0 4px 4px 0;vertical-align:middle}
+  .kopfzeile{display:flex;justify-content:space-between;gap:16px;font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:20px;flex-wrap:wrap}
+  .seitentitel{border-bottom:2px solid var(--ink);padding-bottom:14px}
+  .seitentitel h1,.seitentitel h2{font-size:23px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .seitentitel h1 span,.seitentitel h2 span{color:var(--amt-blue)}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+  .untertitel{font-size:13px;color:var(--muted);margin-top:6px;max-width:560px}
+  .anrede{font-family:'IBM Plex Serif',serif;font-style:italic;font-size:16px;margin:22px 0 8px}
+  .lead{font-size:13.5px;max-width:620px}
+  .lead b{color:var(--amt-blue)}
+  .kacheln{display:grid;grid-template-columns:repeat({{ 4 if vz_quartal else 3 }},1fr);gap:12px;margin:22px 0 6px}
+  @media (max-width:660px){.kacheln{grid-template-columns:1fr 1fr}}
+  .kachel{border:1.5px solid var(--ink);padding:13px 15px;min-width:0;overflow-wrap:break-word}
+  .kachel .kl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+  .kachel .kz{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600;margin-top:4px}
+  .kachel.gruen{border-color:var(--wirkung);background:var(--wirkung-soft)}
+  .kachel.gruen .kz{color:var(--wirkung)}
+  .kachel.orange{border-color:var(--delta);background:var(--delta-soft)}
+  .kachel.orange .kz{color:var(--delta)}
+  .abschnitt{margin-top:28px;border-top:1.5px solid var(--ink);padding-top:9px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .abschnitt h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.12em}
+  .abschnitt .hinweis{font-size:11px;color:var(--muted)}
+  .fuenf{display:grid;grid-template-columns:repeat({{ zahlen|length if zahlen else 1 }},1fr);gap:10px;margin-top:12px}
+  @media (max-width:660px){.fuenf{grid-template-columns:1fr 1fr}}
+  .fz{border:1px solid var(--line);border-top:3px solid var(--amt-blue);padding:10px 11px;min-width:0}
+  .fz.gruen{border-top-color:var(--wirkung)}
+  .fz .z{font-family:'IBM Plex Mono',monospace;font-size:15.5px;font-weight:600;white-space:nowrap}
+  .fz .l{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}
+  .mini{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dotted var(--line);font-size:13px}
+  .mini>span:first-child{flex:1}
+  .mini .mb{flex:none;width:220px;height:7px;background:#eef1ef;position:relative}
+  .mini .mb i{position:absolute;left:0;top:0;bottom:0;background:var(--amt-blue)}
+  .mini .me{font-family:'IBM Plex Mono',monospace;font-weight:600;white-space:nowrap;min-width:82px;text-align:right}
+  .mini.ph, .mini.ph .me{color:var(--placeholder)}
+  .mini.ph .mb i{background:repeating-linear-gradient(-45deg,#c3ccc6,#c3ccc6 4px,#e8ece9 4px,#e8ece9 8px)}
+  .wegweiser{margin-top:10px}
+  .weg{display:flex;gap:14px;padding:8px 0;border-bottom:1px dotted var(--line);font-size:13.5px;align-items:baseline}
+  .weg .ws{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--amt-blue);flex:none;width:60px}
+  .weg .wt b{display:block}
+  .weg .wt span{color:var(--muted);font-size:12.5px}
+  .whd{background:var(--amt-blue-soft);border-left:3px solid var(--amt-blue);padding:11px 14px;font-size:12.5px;margin:12px 0}
+  .whd b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.11em;color:var(--amt-blue);margin-bottom:3px}
+  .whd .zahl{font-family:'IBM Plex Mono',monospace;font-weight:600}
+  table.zwei{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  table.zwei th{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;text-align:right;padding:6px 4px;border-bottom:1.5px solid var(--ink)}
+  table.zwei th:first-child{text-align:left}
+  table.zwei td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:baseline}
+  table.zwei td.n{font-family:'IBM Plex Mono',monospace;text-align:right;white-space:nowrap}
+  table.zwei td .sub{display:block;font-size:11.5px;color:var(--muted)}
+  table.zwei tr.summe td{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-weight:600}
+  table.zwei tr.summe td.n{font-size:14px}
+  .neg{color:var(--delta)}
+  .rz{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .rz .rl b{font-size:14px;font-weight:600}
+  .rz .rl span{display:block;font-size:12px;color:var(--muted)}
+  .rz .rw{font-family:'IBM Plex Mono',monospace;font-size:14px;white-space:nowrap;font-weight:500}
+  .rz.summe{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+  .rz.summe .rw{font-weight:600;font-size:15.5px}
+  .rechtsband{background:var(--recht-soft);border:1.5px solid var(--recht);padding:12px 16px;font-size:12.5px;margin:18px 0}
+  .rechtsband b{color:var(--recht);display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px}
+  .betrag{display:flex;align-items:baseline;gap:14px;margin:20px 0 8px;flex-wrap:wrap}
+  .betrag .zahl{font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:600}
+  .betrag .label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+  .splitbar{display:flex;height:28px;border:1.5px solid var(--ink);margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:11px}
+  .splitbar div{display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden;white-space:nowrap}
+  .sb-bund{background:var(--amt-blue)}
+  .sb-land{background:#20705f}
+  .sb-gem{background:#63a088}
+  .splitlegende{font-size:11.5px;margin-top:6px;color:var(--muted)}
+  .splitlegende .v{font-family:'IBM Plex Mono',monospace;color:var(--ink)}
+  .kat{border-bottom:1px solid var(--line);padding:11px 0 10px}
+  .kat-kopf{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .kat-name{font-weight:600;font-size:14px}
+  .kat-anteil{font-size:11px;color:var(--muted);margin-left:8px;font-weight:400}
+  .kat-euro{font-family:'IBM Plex Mono',monospace;font-size:14.5px;font-weight:600;white-space:nowrap}
+  .kat-bar{height:7px;background:#eef1ef;margin-top:7px;position:relative}
+  .kat-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--amt-blue)}
+  .entspricht{margin-top:8px;font-size:13px;color:var(--wirkung);display:flex;gap:8px}
+  .entspricht .gleich{font-family:'IBM Plex Mono',monospace;font-weight:600;flex:none;background:var(--wirkung-soft);padding:0 6px;border-radius:2px}
+  .grau{color:var(--placeholder)!important}
+  .ph .kat-name,.ph .kat-euro{color:var(--placeholder)}
+  .ph .kat-bar i{background:repeating-linear-gradient(-45deg,#c3ccc6,#c3ccc6 4px,#e8ece9 4px,#e8ece9 8px)}
+  .ph-tag{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--placeholder);border:1px dashed var(--placeholder);padding:1px 6px;margin-left:8px;vertical-align:2px}
+  .kreislauf{margin-top:16px;border:1.5px solid var(--wirkung);background:var(--wirkung-soft);padding:15px 17px}
+  .kreislauf h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--wirkung);margin-bottom:10px}
+  .kflow{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+  @media (max-width:660px){.kflow{grid-template-columns:1fr}}
+  .kbox{background:#fff;border:1px solid var(--line);padding:10px 12px}
+  .kbox .kl{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+  .kbox .kz{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600;margin-top:2px}
+  .kbox .kd{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .kpfeil{font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--wirkung);text-align:center}
+  .kreislauf .fussnote{font-size:11.5px;color:var(--muted);margin-top:10px}
+  .kist{margin-top:16px;border:1.5px solid var(--recht);background:var(--recht-soft);padding:13px 16px;font-size:12.5px}
+  .kist b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--recht);margin-bottom:3px}
+  .deltabox{margin-top:14px;background:var(--delta-soft);border:1.5px solid var(--delta);padding:14px 16px}
+  .deltabox h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--delta);margin-bottom:8px}
+  .deltazeile{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:4px 0;border-bottom:1px dotted #d9c5a6}
+  .deltazeile:last-child{border-bottom:none}
+  .deltazeile .dz-wert{font-family:'IBM Plex Mono',monospace;white-space:nowrap;color:var(--delta);font-weight:600}
+  .schritt{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .schritt .nr{flex:none;width:30px;height:30px;border:1.5px solid var(--ink);display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-weight:600}
+  .schritt b{display:block;font-size:14px}
+  .schritt span{font-size:12.5px;color:var(--muted)}
+  .belehrung{border:1px solid var(--line);padding:12px 14px;font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5}
+  .belehrung b{display:block;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+  .gut{margin-top:12px;background:var(--wirkung-soft);border-left:3px solid var(--wirkung);padding:10px 13px;font-size:12.5px}
+  .gut b{color:var(--wirkung)}
+  .seitenfuss{margin-top:28px;border-top:1px solid var(--line);padding-top:8px;display:flex;justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);flex-wrap:wrap;gap:6px}
+</style>
+</head>
+<body>
+
+{% set fa = b.meta.finanzamt or "Finanzamt" %}
+{% set fuss %}{{ fa }} · Steuerjahr {{ jahr }}{% endset %}
+
+<!-- ============ SEITE 1 ============ -->
+<div class="sheet">
+  <div class="mockband"></div>
+  <span class="mocklabel">Prototyp · Demonstrator · Modellrechnung — ersetzt nicht Ihren Bescheid</span>
+  <div class="kopfzeile">
+    <span>{{ fa }}</span><span>{{ "Änderungsbescheid" if m.aenderungsbescheid else "Bescheid" }} vom {{ b.meta.bescheiddatum or "—" }}</span>
+    {% if not validiert %}<span class="chip" style="color:var(--delta);border-color:var(--delta)">Nachrechnung abweichend — bitte Werte prüfen</span>{% endif %}
+  </div>
+  <div class="seitentitel">
+    <span class="eyebrow">Ihr Steuerjahr {{ jahr }} · Auf einen Blick</span>
+    <h1>Ihre Steuern und Ihr <span>Beitrag zum Gemeinwesen</span></h1>
+  </div>
+
+  <p class="anrede">{{ anrede }},</p>
+  <p class="lead">vielen Dank. Mit Ihrer Einkommensteuer haben Sie {{ jahr }} einen Beitrag zum Gemeinwesen geleistet: Bildung, Gesundheit, die Erneuerung und Instandhaltung von Infrastruktur, öffentliche Sicherheit — all dies wäre nicht möglich ohne die Steuern und Abgaben von Bürgerinnen und Bürgern, wie Ihnen. Auf den nächsten Seiten sehen Sie im Detail, wie hoch Ihr Beitrag konkret ausgefallen ist und welchen Beitrag er geleistet hat.</p>
+
+  <div class="kacheln">
+    <div class="kachel"><div class="kl">Festgesetzte Steuer{{ " (inkl. Soli)" if m.soli_faellt_an }}{{ " + KiSt" if kist }}</div><div class="kz">{{ festgesetzt_gesamt }}</div></div>
+    <div class="kachel"><div class="kl">Bereits gezahlt</div><div class="kz">{{ gezahlt }}</div></div>
+    {% if erstattung %}<div class="kachel gruen"><div class="kl">Ihre Erstattung</div><div class="kz">{{ erstattung }}</div></div>
+    {% elif nachzahlung %}<div class="kachel orange"><div class="kl">Ihre Nachzahlung</div><div class="kz">{{ nachzahlung }}</div></div>
+    {% else %}<div class="kachel"><div class="kl">Ausgleich</div><div class="kz">0 €</div></div>{% endif %}
+    {% if vz_quartal %}<div class="kachel"><div class="kl">Künftige Vorauszahlungen</div><div class="kz">{{ vz_quartal }}<span style="font-size:13px;font-weight:400"> /Quartal</span></div></div>{% endif %}
+  </div>
+  {% if erstattung %}<p class="kontosatz" style="font-size:12.5px;color:var(--muted)">Die Erstattung überweisen wir auf Ihr hinterlegtes Konto, Sie müssen dafür nichts weiter tun. Zu Ihren Einspruchsrechten → Seite 6.</p>{% endif %}
+
+  {% if zahlen %}
+  <div class="abschnitt"><h3>Perspektivenwechsel: Ihr Steuerjahr in {{ zahlen|length }} anderen Zahlen</h3></div>
+  <div class="fuenf">
+    {% for z in zahlen %}<div class="fz{{ " gruen" if z.gruen }}"><div class="z">{{ z.wert }}</div><div class="l">{{ z.label }}</div></div>{% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="abschnitt">
+    <h3>Wo Ihr Beitrag hinfließt: Überblick</h3>
+    <span class="hinweis">Ihre {{ basis }} (Einkommensteuer{{ " + Soli" if m.soli_faellt_an }}), verteilt wie die tatsächlichen Staatsausgaben</span>
+  </div>
+  {% for k in kategorien %}
+  <div class="mini{{ " ph" if not k.verifiziert }}"><span>{{ k.name }}</span><span class="mb"><i style="width:{{ k.balken }}%"></i></span><span class="me">{{ k.euro }}</span></div>
+  {% endfor %}
+  <p style="font-size:12px;color:var(--muted);margin-top:8px">Mehr Details auf Seite 5.</p>
+
+  <div class="abschnitt"><h3>So lesen Sie diesen Bescheid</h3></div>
+  <div class="wegweiser">
+    <div class="weg"><span class="ws">Seite 2</span><span class="wt"><b>Die Berechnung, Teil 1</b><span>Von Ihren Einkommen zum zu versteuernden Einkommen.</span></span></div>
+    <div class="weg"><span class="ws">Seite 3</span><span class="wt"><b>Die Berechnung, Teil 2</b><span>Vom zu versteuernden Einkommen zur Steuer. Samt der Mechanismen, die Ihren individuellen Fall prägen.</span></span></div>
+    <div class="weg"><span class="ws">Seite 4</span><span class="wt"><b>Festsetzung und Abrechnung</b><span>Der rechtsverbindliche Kern entsprechend ELSTER-Bescheid.</span></span></div>
+    <div class="weg"><span class="ws">Seite 5</span><span class="wt"><b>Ihr Wirkungsbescheid</b><span>Wohin Ihr Beitrag konkret fließt. (Und was womöglich auch zurückfließt.)</span></span></div>
+    <div class="weg"><span class="ws">Seite 6</span><span class="wt"><b>Ihre Rechte &amp; Zahlungen</b><span>Einspruch, Fristen, Vorauszahlungen, Belege.</span></span></div>
+  </div>
+  <div class="seitenfuss"><span>{{ fuss }}</span><span>Seite 1 von 6</span></div>
+</div>
+
+<!-- ============ SEITE 2 — Berechnung Teil 1 ============ -->
+<div class="sheet">
+  <div class="kopfzeile"><span>{{ fuss }}</span>
+    {% if splitting %}<span class="chip">Baustein: Zusammenveranlagung</span>{% endif %}
+    {% if m.verlustabzug %}<span class="chip">Baustein: Verlustabzug</span>{% endif %}
+    {% if m.unterhalt_realsplitting %}<span class="chip">Baustein: Realsplitting</span>{% endif %}
+  </div>
+  <div class="seitentitel">
+    <span class="eyebrow">So wurde Ihr Beitrag gerechnet · Teil 1</span>
+    <h2>Von Ihren Einkommen <span>zum zu versteuernden Einkommen</span></h2>
+    {% if splitting %}<p class="untertitel">Sie werden zusammen veranlagt: Erst rechnen wir für jede Person einzeln, dann gemeinsam.</p>{% endif %}
+  </div>
+
+  <table class="zwei">
+    <tr><th>Position</th><th>{{ "Person A" if splitting else "Betrag" }}</th>{% if splitting %}<th>Person B</th>{% endif %}</tr>
+    {% for z in einkuenfte_zeilen %}
+    <tr><td><b>{{ z.label }}</b><span class="sub">{{ z.sub }}</span></td>
+      <td class="n{{ " neg" if z.neg }}">{{ "− " if z.neg and z.a != "—" }}{{ z.a }}</td>
+      {% if splitting %}<td class="n{{ " neg" if z.neg }}">{{ "− " if z.neg and z.b != "—" }}{{ z.b }}</td>{% endif %}</tr>
+    {% endfor %}
+    <tr class="summe"><td><b>Gesamtbetrag der Einkünfte</b></td><td class="n" {% if splitting %}colspan="2"{% endif %}>{{ euro(f.gesamtbetrag_einkuenfte) }}</td></tr>
+  </table>
+
+  {% if splitting_info %}
+  <div class="whd"><b>Wer trägt finanziell was bei?</b>Vom gemeinsamen Einkommen stammen <span class="zahl">{{ splitting_info.anteil_a }} %</span> von Person A und <span class="zahl">{{ 100 - splitting_info.anteil_a }} %</span> von Person B. Wenn Sie den monatlichen Lohnsteuerabzug fairer auf beide verteilen möchten: Das Faktorverfahren (§ 39f EStG) passt ihn an die tatsächlichen Anteile an, die Jahressteuer bleibt gleich.{% if m.faktorverfahren %} <b style="display:inline;color:var(--wirkung)">Sie nutzen das Faktorverfahren bereits.</b>{% endif %} Wichtig: Hier wird nur der monetäre Beitrag zur Familiengemeinschaft abgebildet, nicht der nicht-finanzielle Beitrag, der durch unbezahlte Sorgearbeit geleistet wird.</div>
+  {% endif %}
+
+  <table class="zwei">
+    <tr><th>Gemeinsame Abzüge</th><th></th>{% if splitting %}<th></th>{% endif %}</tr>
+    {% for z in abzuege_zeilen %}
+    <tr><td><b>{{ z.label }}</b><span class="sub">{{ z.sub }}</span></td><td class="n neg" {% if splitting %}colspan="2"{% endif %}>− {{ z.wert }}</td></tr>
+    {% endfor %}
+    {% if f.kinderfreibetraege_summe and m.guenstigerpruefung_kindergeld %}
+    <tr><td><b>Freibeträge für Ihre {{ b.kinder|length }} Kind{{ "er" if b.kinder|length > 1 }}</b><span class="sub">warum diese statt Kindergeld gelten: nächste Seite</span></td><td class="n neg" {% if splitting %}colspan="2"{% endif %}>− {{ euro(f.kinderfreibetraege_summe) }}</td></tr>
+    {% endif %}
+    <tr class="summe"><td><b>Zu versteuerndes Einkommen</b></td><td class="n" {% if splitting %}colspan="2"{% endif %}>{{ zve }}</td></tr>
+  </table>
+
+  {% if m.agb_zumutbare_belastung %}
+  <div class="whd"><b>Warum von Ihren {{ euro(b.abzuege.agb_geltend_gemacht) }} nur {{ euro(b.abzuege.agb_abziehbar) }} steuerlich wirksam sind</b>Außergewöhnliche Belastungen (z. B. Krankheitskosten) zählen erst oberhalb Ihrer zumutbaren Eigenbelastung, bei Ihnen <span class="zahl">{{ euro(b.abzuege.agb_zumutbare_belastung) }}</span>. Praktisch heißt das für die Zukunft: Planbare Kosten (Zahnersatz, Brillen) in einem Jahr zu bündeln, macht sich steuerlich bezahlt.</div>
+  {% endif %}
+  {% if m.kapital_tariflich %}
+  <div class="whd"><b>Warum Ihre Kapitalerträge im Tarif landen</b>Normalerweise gilt die 25-%-Abgeltungsteuer. Bei Ihnen greift der normale Tarif z.&nbsp;B. weil die Günstigerprüfung (§ 32d Abs. 6 EStG) das für Sie bessere Ergebnis wählt oder die Ertragsart es vorschreibt. Melden Sie sich gerne bei uns für Rückfragen hierzu.</div>
+  {% endif %}
+  {% if m.verlustabzug %}
+  <div class="whd"><b>Ihre Verluste aus früheren Jahren wurden berücksichtigt</b>Von Ihrem Einkommen wurden <span class="zahl">{{ euro(b.abzuege.verlustabzug) }}</span> Verlustvortrag (§ 10d EStG) abgezogen. Verluste verfallen nicht, sondern mindern Ihre Steuer, sobald wieder Gewinne da sind.</div>
+  {% endif %}
+  {% if m.unterhalt_realsplitting %}
+  <div class="whd"><b>Unterhaltsleistungen (Realsplitting)</b>Ihre Unterhaltszahlungen von <span class="zahl">{{ euro(b.abzuege.unterhalt_realsplitting) }}</span> sind als Sonderausgaben abgezogen (§ 10 Abs. 1a EStG). Im Gegenzug versteuert sie die empfangende Person.</div>
+  {% endif %}
+  {% if m.renten %}
+  <div class="whd"><b>Nur ein Teil Ihrer Rente ist steuerpflichtig</b>Besteuert wird nur der Besteuerungsanteil Ihrer Rente, abhängig vom Jahr des Rentenbeginns (§ 22 EStG). Der Rest bleibt steuerfrei.</div>
+  {% endif %}
+  <div class="seitenfuss"><span>{{ fuss }}</span><span>Seite 2 von 6</span></div>
+</div>
+
+<!-- ============ SEITE 3 — Berechnung Teil 2 ============ -->
+<div class="sheet">
+  <div class="kopfzeile"><span>{{ fuss }}</span>
+    {% if splitting %}<span class="chip">Splitting</span>{% endif %}
+    {% if m.progressionsvorbehalt or m.dba_auslandseinkuenfte %}<span class="chip">Progressionsvorbehalt</span>{% endif %}
+    {% if m.kinder %}<span class="chip">Günstigerprüfung</span>{% endif %}
+    {% if m.gewerbesteuer_anrechnung %}<span class="chip">§ 35</span>{% endif %}
+  </div>
+  <div class="seitentitel">
+    <span class="eyebrow">So wurde Ihr Beitrag gerechnet · Teil 2</span>
+    <h2>Vom zu versteuernden Einkommen <span>zur Steuer</span></h2>
+    <p class="untertitel">Auf Ihr zu versteuerndes Einkommen von {{ zve }} wird der {{ "Splittingtarif" if splitting else "Grundtarif" }} angewendet.</p>
+  </div>
+
+  <div class="rz"><span class="rl"><b>{{ "Splittingtarif" if splitting else "Grundtarif" }} auf {{ zve }}{% if steuersatz %} → Steuersatz {{ steuersatz }}{% endif %}</b>
+    <span>{% if splitting %}Ihr gemeinsames Einkommen wird halbiert, versteuert, verdoppelt.{% else %}Tarifformel § 32a EStG.{% endif %}{% if steuersatz %} Der besondere Steuersatz kommt aus dem Progressionsvorbehalt — Kasten unten.{% endif %}</span></span>
+    <span class="rw">{{ tarifliche }}</span></div>
+  {% if m.guenstigerpruefung_kindergeld %}
+  <div class="rz"><span class="rl"><b>plus Verrechnung Kindergeld</b><span>kein Aufschlag — eine Verrechnung, Erklärung unten</span></span><span class="rw">+ {{ euro(f.hinzurechnung_kindergeld) }}</span></div>
+  {% endif %}
+  {% if f.ermaessigung_35a %}
+  <div class="rz"><span class="rl"><b>minus Ermäßigung § 35a</b><span>haushaltsnahe Dienstleistungen / Handwerkerleistungen: 20 % der Arbeitskosten direkt von der Steuer</span></span><span class="rw neg">− {{ euro(f.ermaessigung_35a) }}</span></div>
+  {% endif %}
+  {% if f.ermaessigung_35 %}
+  <div class="rz"><span class="rl"><b>minus Gewerbesteuer-Anrechnung § 35</b><span>das Vierfache des Gewerbesteuer-Messbetrags — vermeidet Doppelbelastung</span></span><span class="rw neg">− {{ euro(f.ermaessigung_35) }}</span></div>
+  {% endif %}
+  <div class="rz summe"><span class="rl"><b>Festzusetzende Einkommensteuer</b></span><span class="rw">{{ euro(f.festgesetzte_est) }}</span></div>
+
+  {% if m.progressionsvorbehalt or m.dba_auslandseinkuenfte %}
+  <div class="whd"><b>Der Progressionsvorbehalt — die unsichtbaren {{ pv_summe }}</b>Ihre steuerfreien {{ "Lohnersatzleistungen (z. B. Elterngeld, Kurzarbeit, ALG)" if m.progressionsvorbehalt else "" }}{{ " und " if m.progressionsvorbehalt and m.dba_auslandseinkuenfte }}{{ "nach DBA steuerfreien Auslandseinkünfte" if m.dba_auslandseinkuenfte }} von <span class="zahl">{{ pv_summe }}</span> bleiben steuerfrei. Sie heben aber den Steuersatz auf Ihr übriges Einkommen — bei Ihnen <span class="zahl">{{ pv_effekt }}</span> Mehrsteuer. Der Grund: Wer steuerfreie Bezüge erhält, soll beim Satz nicht besser stehen als jemand, der dasselbe Geld voll versteuert (§ 32b EStG).</div>
+  {% endif %}
+  {% if m.guenstigerpruefung_kindergeld and kindervorteil %}
+  <div class="whd"><b>Kindergeld „draufgerechnet"? Nein. Es wurde verrechnet.</b>Wir haben beides geprüft: Die Freibeträge ({{ euro(f.kinderfreibetraege_summe) }}) entlasten Sie um <span class="zahl">{{ euro(kindervorteil.steuervorteil_freibetraege) }}</span>, mehr als das Kindergeld ({{ euro(f.hinzurechnung_kindergeld) }}). Also gelten die Freibeträge, und das bereits erhaltene Kindergeld wird gegengerechnet, damit der Vorteil nicht doppelt wirkt. Unterm Strich: Ihr zusätzlicher Kindervorteil beträgt <span class="zahl">{{ euro(kindervorteil.steuervorteil_freibetraege - kindervorteil.kindergeld) }}</span>.</div>
+  {% elif m.kinder and kindervorteil %}
+  <div class="whd"><b>Kindergeld oder Freibeträge? Wir haben geprüft.</b>Für Ihre Kinder ist das Kindergeld ({{ euro(kindervorteil.kindergeld) }}) günstiger als der Abzug der Freibeträge (Entlastung {{ euro(kindervorteil.steuervorteil_freibetraege) }}). Es bleibt also beim Kindergeld. Bei Soli und Kirchensteuer werden die Freibeträge trotzdem berücksichtigt (§ 51a EStG).</div>
+  {% endif %}
+  {% if splitting and splitting_info %}
+  <div class="whd"><b>Ihr Splitting-Vorteil</b>Gegenüber zwei Einzelveranlagungen sparen Sie durch die Zusammenveranlagung <span class="zahl">{{ euro(splitting_info.vorteil) }}</span> (Näherung auf Basis Ihrer Einkommensanteile; die exakte Aufteilung aller Abzüge kann das Ergebnis leicht verschieben).</div>
+  {% endif %}
+  <div class="seitenfuss"><span>{{ fuss }}</span><span>Seite 3 von 6</span></div>
+</div>
+
+<!-- ============ SEITE 4 ============ -->
+<div class="sheet">
+  <div class="kopfzeile"><span>{{ fuss }}</span>
+    <span class="chip">Baustein: {{ "Erstattungsfall" if erstattung else "Nachzahlungsfall" if nachzahlung else "Ausgleich" }}</span>
+    {% if m.vorlaeufigkeit %}<span class="chip">Baustein: teilweise vorläufig</span>{% endif %}
+    {% if m.aenderungsbescheid %}<span class="chip">Baustein: Änderungsbescheid</span>{% endif %}
+  </div>
+  <div class="seitentitel">
+    <span class="eyebrow">Der rechtsverbindliche Teil</span>
+    <h2>Festsetzung und <span>Abrechnung</span></h2>
+  </div>
+
+  <div class="rechtsband"><b>Nur dieser Abschnitt ist der Verwaltungsakt</b>
+  {{ "Änderungsbescheid" if m.aenderungsbescheid else "Bescheid" }} für {{ jahr }} über Einkommensteuer und Solidaritätszuschlag{{ " und Kirchensteuer" if kist }} vom {{ b.meta.bescheiddatum or "—" }}, erlassen vom {{ fa }} (§ 157 AO). Er legt verbindlich fest, wie viel Steuer Sie für {{ jahr }} schulden. Alles andere in diesem Dokument erklärt ihn.</div>
+  {% if m.aenderungsbescheid %}
+  <div class="whd"><b>Dieser Bescheid ändert einen früheren</b>Er ersetzt insoweit den vorherigen Bescheid (§ 172 ff. AO). Es gelten die hier ausgewiesenen Beträge.</div>
+  {% endif %}
+
+  <div class="abschnitt"><h3>1 · Festsetzung</h3></div>
+  <div class="rz"><span class="rl"><b>Einkommensteuer</b></span><span class="rw">{{ euro(f.festgesetzte_est, true) }}</span></div>
+  <div class="rz"><span class="rl"><b>Solidaritätszuschlag</b>{% if soli_box %}<span>statt rechnerischer {{ soli_box.voll }} — Erklärung im Kasten</span>{% endif %}</span><span class="rw">{{ euro(f.soli, true) }}</span></div>
+  {% if kist %}<div class="rz"><span class="rl"><b>Kirchensteuer</b><span>Ihr Beitrag zu Ihrer Konfessionsgemeinschaft — Einordnung auf Seite 5</span></span><span class="rw">{{ kist }}</span></div>{% endif %}
+  <div class="rz summe"><span class="rl"><b>Festgesetzt werden insgesamt</b></span><span class="rw">{{ festgesetzt_gesamt }}</span></div>
+  {% if soli_box %}
+  <div class="whd"><b>Warum nur {{ euro(f.soli, true) }} Soli?</b>Sie liegen <span class="zahl">{{ soli_box.ueber }}</span> über der Soli-Freigrenze. In dieser Gleitzone wird nur der Überhang belastet (11,9 %) — statt der vollen 5,5 % auf alles. Ihre Ersparnis: <span class="zahl">{{ soli_box.ersparnis }}</span>.</div>
+  {% endif %}
+
+  <div class="abschnitt"><h3>2 · Abrechnung</h3></div>
+  <div class="rz"><span class="rl"><b>Festgesetzt insgesamt</b></span><span class="rw">{{ festgesetzt_gesamt }}</span></div>
+  {% if b.abrechnung.lohnsteuer_gesamt %}<div class="rz"><span class="rl"><b>Bereits gezahlt: Lohnsteuerabzug</b><span>von Arbeitgebern einbehalten</span></span><span class="rw neg">− {{ euro(b.abrechnung.lohnsteuer_gesamt) }}</span></div>{% endif %}
+  {% if b.abrechnung.vorauszahlungen_geleistet %}<div class="rz"><span class="rl"><b>Bereits getilgt: Ihre Vorauszahlungen</b></span><span class="rw neg">− {{ euro(b.abrechnung.vorauszahlungen_geleistet) }}</span></div>{% endif %}
+  {% if erstattung %}
+  <div class="rz summe"><span class="rl"><b>Zu viel gezahlt — Ihre Erstattung</b></span><span class="rw" style="color:var(--wirkung)">{{ erstattung }}</span></div>
+  {% elif nachzahlung %}
+  <div class="rz summe"><span class="rl"><b>Noch zu zahlen — Ihre Nachzahlung</b><span>Frist und Zahlweg auf Seite 6; bei Härten hilft ein Stundungsantrag</span></span><span class="rw" style="color:var(--delta)">{{ nachzahlung }}</span></div>
+  {% endif %}
+
+  {% if m.vorlaeufigkeit %}
+  <div class="abschnitt"><h3>3 · Dieser Bescheid ist teilweise vorläufig — was das heißt</h3></div>
+  <p style="font-size:13px;margin-top:8px">{{ b.meta.vorlaeufigkeitsvermerke|length }} Punkt{{ "e" if b.meta.vorlaeufigkeitsvermerke|length > 1 }} ({{ b.meta.vorlaeufigkeitsvermerke|join(", ") }}) {{ "sind" if b.meta.vorlaeufigkeitsvermerke|length > 1 else "ist" }} derzeit gerichtlich umstritten. <b>Ihr Bescheid bleibt gültig.</b> Falls Gerichte anders entscheiden, korrigieren wir automatisch zu Ihren Gunsten, Sie müssen keinen Einspruch einlegen (§ 165 AO). Der vollständige Wortlaut steht im Pflichttext auf Seite 6.</p>
+  {% endif %}
+  <div class="seitenfuss"><span>{{ fuss }}</span><span>Seite 4 von 6</span></div>
+</div>
+
+<!-- ============ SEITE 5 — Wirkungsbescheid ============ -->
+<div class="sheet">
+  <div class="kopfzeile"><span>{{ fuss }}</span><span class="chip">Beilage · kein Verwaltungsakt</span></div>
+  <div class="seitentitel">
+    <span class="eyebrow">Zu Ihrer Information</span>
+    <h2>Ihr <span>Beitrag zum Gemeinwesen</span></h2>
+    <p class="untertitel">Ihre Steuer ist nicht zweckgebunden. Alle Steuern können für alles ausgegeben werden. Wir zeigen Ihnen deshalb, in welche Bereiche Ihr Beitrag proportional zu den gesamten Staatsausgaben geflossen ist.</p>
+  </div>
+
+  <div class="betrag"><span class="zahl">{{ basis }}</span><span class="label">Einkommensteuer{{ " + Soli" if m.soli_faellt_an }} {{ jahr }}: So verteilt sich Ihr Beitrag</span></div>
+  {% if split.stadtstaat %}
+  <div class="splitbar"><div class="sb-bund" style="width:42.5%">Bund 42,5 %</div><div class="sb-land" style="width:57.5%">{{ b.meta.bundesland }} 57,5 %</div></div>
+  <p class="splitlegende">Bund <span class="v">{{ euro(split.bund, true) }}</span> · Land + Gemeinde <span class="v">{{ euro(split.lokal_gesamt, true) }}</span> ({{ b.meta.bundesland }} ist Stadtstaat: Landes- und Gemeindeanteil fallen zusammen). <b>{{ euro(split.lokal_gesamt, true) }} Ihrer Steuer bleiben in {{ b.meta.bundesland }}.</b>{% if m.soli_faellt_an %} <span style="color:var(--muted)">Ihr Soli ({{ euro(f.soli, true) }}) fließt vollständig an den Bund.</span>{% endif %}</p>
+  {% else %}
+  <div class="splitbar"><div class="sb-bund" style="width:42.5%">Bund 42,5 %</div><div class="sb-land" style="width:42.5%">Land 42,5 %</div><div class="sb-gem" style="width:15%">Gemeinde 15 %</div></div>
+  <p class="splitlegende">Bund <span class="v">{{ euro(split.bund, true) }}</span> · Ihr Land <span class="v">{{ euro(split.land, true) }}</span> · Ihre Gemeinde <span class="v">{{ euro(split.gemeinde, true) }}</span> (Art. 106 GG).{% if m.soli_faellt_an %} <span style="color:var(--muted)">Ihr Soli ({{ euro(f.soli, true) }}) fließt vollständig an den Bund.</span>{% endif %}</p>
+  {% endif %}
+
+  {% if kreislauf %}
+  <div class="kreislauf">
+    <h4>Der Sozialstaat ist keine Einbahnstraße: eingezahlt — und zurückgeflossen</h4>
+    <div class="kflow">
+      <div class="kbox"><div class="kl">Ihr rechnerischer Beitrag zur sozialen Sicherung</div><div class="kz">{{ euro(kreislauf.eingezahlt_soziales, true) }}</div><div class="kd">größter Posten Ihres Beitrags</div></div>
+      <div class="kpfeil">⇄</div>
+      <div class="kbox"><div class="kl">{{ jahr }} an Sie zurückgeflossen</div><div class="kz">{{ euro(kreislauf.zurueckgeflossen_kindergeld, true) }}</div><div class="kd">{% if kg_erhalten %}{{ kg_erhalten }} Kindergeld{{ " (gesetzlicher Jahresbetrag für Ihre Kinder)" if kg_abgeleitet }}{% endif %}{% if kg_erhalten and lohnersatz %} + {% endif %}{% if lohnersatz %}{{ lohnersatz }} steuerfreie Lohnersatzleistungen{% endif %}</div></div>
+    </div>
+    <p class="fussnote">In manchen Lebensphasen tragen Sie mehr Sozialleistungen, in anderen Phasen fließt mehr an Sie zurück (z.&nbsp;B. im Zuge der Familiengründung und Familienphase). Genau dafür ist der Sozialstaat da.</p>
+  </div>
+  {% endif %}
+
+  <div class="abschnitt">
+    <h3>Wofür Ihr Beitrag steht</h3>
+    <span class="hinweis">Anteile: tatsächliche Staatsausgaben (nach COFOG, einer Klassifikation der Aufgabenbereiche des Staates) · „≙" veranschaulicht den Wert nur und entspricht nicht der tatsächlichen Verwendung · Einheitswerte: aktuellste verifizierte Kostensätze, je mit Bezugsjahr</span>
+  </div>
+  {% for k in kategorien %}
+  <div class="kat{{ " ph" if not k.verifiziert }}">
+    <div class="kat-kopf"><span class="kat-name">{{ k.name }}<span class="kat-anteil">{{ k.anteil }}</span>{% if not k.verifiziert %}<span class="ph-tag">Näherung / Platzhalter</span>{% endif %}</span><span class="kat-euro">{{ k.euro }}</span></div>
+    <div class="kat-bar"><i style="width:{{ k.breite }}%"></i></div>
+    {% if k.einheiten %}
+    <div class="entspricht"><span class="gleich">≙</span><span>entspricht {% for e in k.einheiten %}<b>{{ e.text }}</b> <span style="color:var(--muted);font-size:11px">({{ e.label }})</span>{{ " — oder " if not loop.last }}{% endfor %}</span></div>
+    {% endif %}
+    {% if k.hinweis %}
+    <div class="entspricht grau"><span class="gleich" style="background:#f0f2f0">i</span><span>{{ k.hinweis }}</span></div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  {% if wirkung_fussnoten %}
+  <div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.45">
+    {% for fn in wirkung_fussnoten %}<div>{{ fn }}</div>{% endfor %}
+  </div>
+  {% endif %}
+
+  {% if kist %}
+  <div class="kist"><b>Ihre Kirchensteuer: {{ kist }}</b>{{ kist_baustein }} Sie ist deshalb in der obigen Verteilung nicht enthalten.</div>
+  {% endif %}
+
+  <div class="deltabox">
+    <h4>Was sich gegenüber {{ deltas.jahr_von }} verändert hat (Gesamtstaat, Ist Vorjahr gegen Ist Steuerjahr)</h4>
+    {% for z in deltas.zeilen %}
+    <div class="deltazeile"><span>{{ z.name }}{% if z.pflicht %} <span style="font-size:10px;color:var(--muted)">(Pflichtzeile)</span>{% endif %} — Ihr Anteil {{ deltas.jahr_bis }}: {{ euro(z.ihr_betrag, true) }}</span><span class="dz-wert">{{ "+" if z.steigt }}{{ z.prozent }} %</span></div>
+    {% endfor %}
+    <div class="deltazeile"><span>Gesamtausgaben des Staates</span><span class="dz-wert">+{{ deltas.gesamt_prozent }} %</span></div>
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:12px"><b>Jede Zahl hat eine Quelle.</b> Methodik, Einheitskosten und Datenstände sind vollständig dokumentiert{% if methodik_link %} und über folgenden Link abrufbar: <a href="{{ methodik_link }}">{{ methodik_link }}</a>{% endif %}.</p>
+  <div class="seitenfuss"><span>{{ fuss }}</span><span>Seite 5 von 6</span></div>
+</div>
+
+<!-- ============ SEITE 6 ============ -->
+<div class="sheet">
+  <div class="kopfzeile"><span>{{ fuss }}</span>
+    {% if vz_quartal %}<span class="chip">Baustein: Vorauszahlungen</span>{% endif %}
+  </div>
+  <div class="seitentitel">
+    <span class="eyebrow">Ein Bescheid ist keine Einbahnstraße</span>
+    <h2>Ihre Rechte, Fristen <span>und Zahlungen</span></h2>
+    <p class="untertitel">Wenn etwas nicht stimmt: Sie haben einen Monat Zeit, sich zu melden, formlos und kostenlos.</p>
+  </div>
+
+  <div class="schritt"><span class="nr">1</span><span><b>Anrufen und nachfragen</b><span>Viele Fragen klären sich im Gespräch mit Ihrem Finanzamt.</span></span></div>
+  <div class="schritt"><span class="nr">2</span><span><b>Einspruch einlegen</b><span>Online über Mein ELSTER, per Brief oder im Amt. Ein Satz genügt, die Begründung kann folgen.{% if erstattung %} Ihre Erstattung kommt trotzdem.{% endif %}</span></span></div>
+  <div class="schritt"><span class="nr">3</span><span><b>Frist im Blick behalten</b><span>Ein Monat nach Bekanntgabe. Danach wird der Bescheid bestandskräftig.</span></span></div>
+
+  {% if nachzahlung %}
+  <div class="abschnitt"><h3>Ihre Nachzahlung</h3></div>
+  <p style="font-size:13px;margin-top:8px">Bitte überweisen Sie <b>{{ nachzahlung }}</b> bis zur im Bescheid genannten Frist. Bei verspäteter Zahlung entstehen Säumniszuschläge (1 % je Monat, § 240 AO). Wenn die Zahlung Sie hart trifft und aktuell nicht möglich ist: Ein formloser <b>Stundungsantrag</b> ist Ihr gutes Recht.</p>
+  {% endif %}
+  {% if vz_quartal %}
+  <div class="abschnitt"><h3>Ihre künftigen Vorauszahlungen</h3></div>
+  <p style="font-size:13px;margin-top:8px">Weil Ihre Steuer nicht vollständig über den Lohnabzug gedeckt ist, zahlen Sie künftig quartalsweise voraus: <b>{{ vz_quartal }}</b> jeweils zum 10. März, Juni, September, Dezember.</p>
+  <div class="whd"><b>Erwarten Sie künftig weniger Einkommen?</b>Etwa durch Elternzeit, Ruhestand oder Auftragsrückgang: Dann beantragen Sie formlos eine <b>Herabsetzung</b>. Ein Satz mit kurzer Begründung genügt, online über Mein ELSTER. Das schafft Ihnen unterjährig Liquidität.</div>
+  {% endif %}
+
+  <div class="gut"><b>Gut zu wissen:</b> Dieser Bescheid dient als Einkommensnachweis bei anderen Behörden (Elterngeld, BAföG, Wohngeld, Kita-Gebühren), bewahren Sie ihn deshalb gut auf. Belege heben Sie mindestens bis zur Bestandskraft auf; ärztliche Atteste länger. Für einen Tippfehler reicht eine formlose Nachricht. Hierfür ist kein förmlicher Einspruch nötig.</div>
+
+  <div class="belehrung"><b>Pflichttexte im Wortlaut (gesetzlich vorgeschrieben)</b>
+  <u>Rechtsbehelfsbelehrung.</u> Die Festsetzung der Einkommensteuer und des Solidaritätszuschlags kann mit dem Einspruch angefochten werden. Der Einspruch ist bei dem vorbezeichneten Finanzamt schriftlich einzureichen, diesem elektronisch zu übermitteln oder dort zur Niederschrift zu erklären. Die Frist für die Einlegung eines Einspruchs beträgt einen Monat. Sie beginnt mit Ablauf des Tages, an dem Ihnen dieser Bescheid bekannt gegeben worden ist. Bei Zusendung durch einfachen Brief gilt die Bekanntgabe mit dem vierten Tag nach Aufgabe zur Post als bewirkt (§ 122 Abs. 2 AO). Der Einspruch ist gebührenfrei (§§ 347 ff. AO). Hinweis: Auch bei Einspruch müssen angeforderte Beträge fristgemäß gezahlt werden, es sei denn, die Vollziehung ist ausgesetzt oder gestundet.
+  {% if m.vorlaeufigkeit %}<br><br><u>Vorläufigkeitsvermerk.</u> Die Festsetzung ist gem. § 165 Abs. 1 Satz 2 AO vorläufig hinsichtlich: {{ b.meta.vorlaeufigkeitsvermerke|join("; ") }}. Sollte aufgrund einer Entscheidung des EuGH, des BVerfG oder des BFH diese Steuerfestsetzung aufzuheben oder zu ändern sein, wird die Aufhebung oder Änderung von Amts wegen vorgenommen; ein Einspruch ist insoweit nicht erforderlich.{% endif %}</div>
+  <div class="seitenfuss"><span>{{ fuss }}</span><span>Seite 6 von 6</span></div>
+</div>
+
+</body>
+</html>

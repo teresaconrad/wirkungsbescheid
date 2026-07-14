@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wirkungsbescheid-Demonstrator</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#16211c;--line:#c9d1cc;--blue:#0b4f6c;--gruen:#1f6f4a;--muted:#5d6a63}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'IBM Plex Sans',sans-serif;background:#e8ebe9;color:var(--ink);padding:60px 16px;line-height:1.55}
+  .karte{max-width:620px;margin:0 auto 24px;background:#fff;padding:40px 44px;box-shadow:0 2px 6px rgba(22,33,28,.12)}
+  h1{font-size:24px;line-height:1.2} h1 span{color:var(--blue)}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+  p{font-size:13.5px;margin-top:10px;color:var(--muted)}
+  .drop{margin-top:22px;border:2px dashed var(--line);padding:28px;text-align:center}
+  input[type=file]{font-size:13px}
+  button{margin-top:14px;background:var(--blue);color:#fff;border:none;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+  .hinweis{background:#e9f1f5;border-left:3px solid var(--blue);padding:10px 14px;font-size:12px;margin-top:18px}
+  .demo a.fall{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border:1px solid var(--line);padding:10px 14px;margin-top:8px;color:var(--ink);text-decoration:none}
+  .demo a.fall:hover{border-color:var(--blue)}
+  .demo a.fall:hover .fb{color:var(--blue)}
+  .demo .fb{font-size:13.5px;font-weight:600}
+  .demo .fo{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:2px}
+  .demo .fid{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);white-space:nowrap}
+  .warn{background:#f7efe3;border-left:3px solid #9a5b1a;padding:10px 14px;font-size:12px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="karte">
+  <span class="eyebrow">Prototyp · Re:form / Project Together</span>
+  <h1>Vom Steuerbescheid zum <span>Wirkungsbescheid</span></h1>
+  <p>Laden Sie Ihren Einkommensteuerbescheid hoch (PDF, JPEG, PNG oder HEIC — Scan oder Handyfoto). Wir lesen ihn aus, rechnen ihn zur Kontrolle nach und übersetzen ihn in einen verständlichen Steuer- und Wirkungsbescheid.</p>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <div class="drop">
+      <input type="file" name="datei" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,.json" multiple required>
+      <br><button type="submit">Auslesen &amp; übersetzen</button>
+      <p style="margin-top:12px;font-size:12px">Bei Fotos: bitte <b>alle Seiten</b> fotografieren und gemeinsam auswählen (eine Datei je Seite, in korrekter Reihenfolge). Das Auslesen dauert 30–60&nbsp;Sekunden.</p>
+    </div>
+  </form>
+  {% if not api_verfuegbar %}
+  <div class="warn"><b>Extraktion nicht konfiguriert</b> (kein API-Key hinterlegt). Der Demo-Modus unten funktioniert vollständig.</div>
+  {% endif %}
+  <div class="hinweis"><b>Datenschutz:</b> Ihr Bescheid wird nicht gespeichert. Die Verarbeitung erfolgt nur im Arbeitsspeicher, sensible Kennungen (Steuer-ID, IBAN, Namen) werden gar nicht erst erfasst und übernommen. Es handelt sich um eine Modellrechnung, keine steuerliche Beratung; dieses Dokument ersetzt nicht den formalen ELSTER-Bescheid.</div>
+</div>
+
+{% if demo_faelle %}
+<div class="karte demo">
+  <span class="eyebrow">Demo-Modus · zehn Beispielfälle zum Ausprobieren</span>
+  <p style="margin-top:4px">Ohne eigenen Bescheid ausprobieren? Wählen Sie eine Lebenssituation und sehen Sie, wie der kombinierte Steuer-Wirkungsbescheid aussähe. Alle Fälle sind erfunden, aber steuerlich exakt durchgerechnet:</p>
+  <div style="margin-top:10px">
+  {% for f in demo_faelle %}
+  <a class="fall" href="/demo/{{ f.id }}">
+    <span class="fb">{{ f.beschreibung }}<span class="fo">{{ f.ort }}</span></span>
+    <span class="fid">{{ f.id }}</span>
+  </a>
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+</body>
+</html>

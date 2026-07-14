@@ -1,0 +1,60 @@
+{
+  "version": "0.2",
+  "stand": "2026-07-13",
+  "hinweis": "Versioniertes Datenpaket. Kategorien-Anteile: Eurostat gov_10a_exp (COFOG, Gesamtstaat S13, Deutschland, Berichtsjahr 2024, Status vorläufig, Datenstand 27.04.2026, DOI 10.2908/GOV_10A_EXP), abgerufen 13.07.2026. Zinsen = GF0107 (Public debt transactions), aus GF01 herausgelöst. Anteile = Kategorie-Ausgaben / Gesamtausgaben 2.139.717 Mio. €; Summe der Anteile = 1,00000. Indikatorwerte: aktuellste verifizierte Kostensätze, je mit Bezugsjahr (Entscheidung 4, 13.07.2026).",
+  "ebenen_split": {
+    "quelle": "Art. 106 Abs. 3, 5 GG",
+    "bund": 0.425,
+    "land": 0.425,
+    "gemeinde": 0.15,
+    "stadtstaaten": ["Berlin", "Hamburg", "Bremen"],
+    "soli_regel": "Soli fließt zu 100 % dem Bund zu (Art. 106 Abs. 1 Nr. 6 GG) — kein Drei-Ebenen-Split."
+  },
+  "kategorien_gesamtstaat": [
+    {"id": "soziale_sicherung", "name": "Soziale Sicherung", "anteil": 0.41276, "mio_eur": 883179, "verifiziert": true, "quelle": "Eurostat GF10, DE 2024p"},
+    {"id": "gesundheit", "name": "Gesundheit", "anteil": 0.15388, "mio_eur": 329254, "verifiziert": true, "quelle": "Eurostat GF07, DE 2024p", "hinweis": "überwiegend beitragsfinanziert (GKV) — steuerfinanziert sind v. a. Bundeszuschuss zur GKV, Öffentlicher Gesundheitsdienst und Krankenhausinvestitionen der Länder; deshalb bewusst ohne Pro-Euro-Einheit"},
+    {"id": "wirtschaft_verkehr", "name": "Wirtschaft & Verkehr", "anteil": 0.10962, "mio_eur": 234556, "verifiziert": true, "quelle": "Eurostat GF04, DE 2024p", "unteranteile": {"verkehr": {"anteil": 0.05407, "mio_eur": 115692, "quelle": "Eurostat GF0405 (Transport), DE 2024p"}}},
+    {"id": "verwaltung", "name": "Allgemeine öffentliche Verwaltung", "anteil": 0.10684, "mio_eur": 228610, "verifiziert": true, "quelle": "Eurostat GF01 abzügl. GF0107 (Zinsen), DE 2024p"},
+    {"id": "bildung", "name": "Bildung", "anteil": 0.09094, "mio_eur": 194584, "verifiziert": true, "quelle": "Eurostat GF09, DE 2024p"},
+    {"id": "ordnung_sicherheit", "name": "Öffentliche Ordnung & Sicherheit", "anteil": 0.03302, "mio_eur": 70657, "verifiziert": true, "quelle": "Eurostat GF03, DE 2024p"},
+    {"id": "verteidigung", "name": "Verteidigung", "anteil": 0.02738, "mio_eur": 58583, "verifiziert": true, "quelle": "Eurostat GF02, DE 2024p"},
+    {"id": "zinsen", "name": "Zinsen (Staatsverschuldung)", "anteil": 0.02303, "mio_eur": 49280, "verifiziert": true, "quelle": "Eurostat GF0107 (Public debt transactions), DE 2024p", "transparenz": true},
+    {"id": "freizeit_kultur", "name": "Freizeit, Kultur & Religion", "anteil": 0.02149, "mio_eur": 45985, "verifiziert": true, "quelle": "Eurostat GF08, DE 2024p"},
+    {"id": "umweltschutz", "name": "Umweltschutz", "anteil": 0.01146, "mio_eur": 24526, "verifiziert": true, "quelle": "Eurostat GF05, DE 2024p"},
+    {"id": "wohnen", "name": "Wohnungswesen & kommunale Einrichtungen", "anteil": 0.00958, "mio_eur": 20503, "verifiziert": true, "quelle": "Eurostat GF06, DE 2024p"}
+  ],
+  "einheitskosten": [
+    {"kategorie": "bildung", "einheit": "BAföG-Monat", "kostensatz": 657, "bezugsjahr": 2024, "quelle": "Destatis PM 283/2025"},
+    {"kategorie": "bildung", "einheit": "Kita-Betreuungsmonat (öffentl. Anteil)", "kostensatz": 1025, "bezugsjahr": 2022, "quelle": "Destatis PM 248/2024"},
+    {"kategorie": "bildung", "einheit": "Schuljahr je Schüler:in", "kostensatz": 10500, "bezugsjahr": 2024, "quelle": "Destatis, Ausgaben je Schüler:in (05b)"},
+    {"kategorie": "soziale_sicherung", "einheit": "Kindergeld-Monat", "kostensatz": 259, "bezugsjahr": 2026, "quelle": "§ 66 EStG (Stand 2026)"},
+    {"kategorie": "soziale_sicherung", "einheit": "Grundsicherungs-Monat (Regelbedarf St. 1)", "kostensatz": 563, "bezugsjahr": 2026, "quelle": "§ 20 SGB II"},
+    {"kategorie": "soziale_sicherung", "einheit": "Wohngeld-Monat (Ø-Anspruch)", "kostensatz": 287, "bezugsjahr": 2024, "quelle": "Destatis Wohngeldstatistik (05b)"},
+    {"kategorie": "wirtschaft_verkehr", "basis": "verkehr", "einheit": "Meter-Jahr Autobahn (Erhalt + Aus-/Neubau)", "kostensatz": 393, "bezugsjahr": 2023, "quelle": "BMDV-Finanzplan (393.000 €/km/Jahr)"},
+    {"kategorie": "wirtschaft_verkehr", "basis": "verkehr", "einheit": "Monat Deutschlandticket-Zuschuss je Abo", "kostensatz": 17, "bezugsjahr": 2025, "quelle": "Bund/Länder-Ausgleich je Abo-Monat (05b)"},
+    {"kategorie": "ordnung_sicherheit", "einheit": "Hafttag Justizvollzug", "kostensatz": 200, "bezugsjahr": 2023, "quelle": "Justiz NRW, Kosten des Vollzugs: 200 €/Gefangenen-Hafttag (2023), justiz.nrw", "fussnote": "Amtlicher Kostensatz des größten Bundeslandes (NRW, 2023); je nach Land 151–276 € — ein bundesweiter Durchschnittssatz liegt nicht amtlich vor."},
+    {"kategorie": "freizeit_kultur", "einheit": "Theaterbesuch (öffentl. Zuschuss je Karte)", "kostensatz": 191, "bezugsjahr": 2024, "quelle": "Deutscher Bühnenverein, Theaterstatistik 2023/24 (Betriebszuschuss je Besuch), via miz.org"},
+    {"kategorie": "verteidigung", "einheit": "Soldat:innen-Tag (Besoldung)", "kostensatz": 141, "bezugsjahr": 2024, "quelle": "Epl. 14 (2024): 9,3 Mrd € Besoldung Soldat:innen / ca. 181.000 aktive / 365 Tage; bundeshaushalt.de + Bundeswehr Zahlen/Daten/Fakten", "fussnote": "Eigene Ableitung aus amtlichen Zahlen: Besoldungsausgaben Einzelplan 14 (2024) ÷ ca. 181.000 aktive Soldat:innen ÷ 365 Tage."}
+  ],
+  "kalender_anker": {
+    "hinweis": "Für Kategorien ohne verifizierten Kostensatz: Kalendertage-Anker (Anteil × 365, reine Arithmetik auf Eurostat-Anteilen — kein Kostensatz nötig, P9-konform). Offen zur Kostensatz-Verifizierung: Verwaltung (z. B. Wahlberechtigten-Anteil Bundestagswahl), Umweltschutz (Stadtbaum-Kosten streuen 750–6.700 € je Kommune — kein seriöser Bundessatz), Wohnen (Bundesmittel je Sozialwohnung ~48.400 € verletzt Größenordnungs-Fit).",
+    "aktiv": true
+  },
+  "methodik_link": null,
+  "kirchensteuer": {
+    "wirkungsmodell": false,
+    "baustein": "Ihr Beitrag zu Ihrer Konfessionsgemeinschaft — der Staat hat keine Verfügung über diese Mittel. Die Kirchensteuer wird von den Ländern lediglich im Auftrag der Religionsgemeinschaften eingezogen."
+  },
+  "deltas": {
+    "hinweis": "P7-Mechanik: Zinsen-Zeile immer + Top-3-Kategorien nach absoluter Ist-Veränderung, ohne redaktionelle Kuratierung. Quelle: Eurostat gov_10a_exp, DE, 2023p→2024p (Mio. €).",
+    "jahr_von": 2023,
+    "jahr_bis": 2024,
+    "gesamt": {"von": 2031433, "bis": 2139717, "prozent": 5.3},
+    "zeilen": [
+      {"id": "zinsen", "name": "Zinsen (Staatsverschuldung)", "von": 40250, "bis": 49280, "prozent": 22.4, "pflicht": true},
+      {"id": "soziale_sicherung", "name": "Soziale Sicherung", "von": 824412, "bis": 883179, "prozent": 7.1},
+      {"id": "gesundheit", "name": "Gesundheit", "von": 312210, "bis": 329254, "prozent": 5.5},
+      {"id": "verwaltung", "name": "Allgemeine öffentliche Verwaltung", "von": 216050, "bis": 228610, "prozent": 5.8}
+    ]
+  }
+}
